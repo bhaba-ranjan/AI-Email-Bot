@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cat Bot UI</title>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <style>
+        body {
+            font-family: Calibri, sans-serif;
+            background-color: #00072d; /* Background color */
+            color: #fff;
+        }
+        .chat-container {
+            height: calc(100vh - 50px);
+            /* border: 1px solid #ccc; */
+            overflow-y: auto;
+            padding: 10px;
+            border-radius: 10px;
+            background-color: transparent;
+            scrollbar-width: thin;
+            scrollbar-color: transparent transparent; /* Transparent scrollbar by default */
+        }
+        .chat-container:hover {
+            scrollbar-color: rgba(255, 255, 255, 0.5) rgba(255, 255, 255, 0.1); /* Visible scrollbar on hover */
+        }
+        .chat-container::-webkit-scrollbar {
+            width: 8px; /* Width of the scrollbar */
+        }
+        .chat-container::-webkit-scrollbar-thumb {
+            background-color: transparent; /* Transparent scrollbar by default */
+            border-radius: 10px; /* Rounded corners */
+        }
+        .chat-container:hover::-webkit-scrollbar-thumb {
+            background-color: rgba(255, 255, 255, 0.5); /* Visible scrollbar thumb on hover */
+        }
+        .message {
+            margin-bottom: 10px;
+            padding: 10px;
+            border-radius: 10px;
+            max-width: 80%;
+        }
+        .user-message {
+            text-align: left;
+            color: #fff;
+            background-color: #274c77; /* User chat window color */
+            margin-left: auto;
+        }
+        .bot-message {
+            text-align: left;
+            color: #fff;
+            background-color: #124559; /* Server response color */
+            margin-right: auto;
+        }
+    </style>
+</head>
+<body>
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col">
+                <div class="chat-container" id="chat-container">
+                    <!-- Chat messages will be inserted here dynamically -->
+                </div>
+            </div>
+        </div>
+        <div class="row fixed-bottom mb-3">
+            <div class="col">
+                <div class="input-group mx-auto" style="max-width: 500px;">
+                    <input type="text" class="form-control" id="user-input" placeholder="Type your message...">
+                    <div class="input-group-append" id="send-button-container">
+                        <button class="btn btn-primary" type="button" onclick="sendMessage()">Send</button>
+                    </div>
+                    <div class="input-group-append d-none" id="loading-spinner-container">
+                        <div class="spinner-border text-light" role="status">
+                            <span class="sr-only">Loading...</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        function sendMessage() {
+            var userInput = document.getElementById("user-input").value;
+            if (userInput.trim() === "") return;
+
+            // Show loading spinner and hide send button
+            document.getElementById("send-button-container").classList.add("d-none");
+            document.getElementById("loading-spinner-container").classList.remove("d-none");
+
+            appendMessage("user", userInput);
+
+            // Send the user input to the server (dummy function for demonstration)
+            // Replace this with actual server communication
+            console.log('fetching')
+            fetch('http://127.0.0.1:5000/query', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({
+                    question: userInput
+                })
+            })
+            .then(response => response.json())
+            .then(data => receiveResponse(data.result))
+            .catch(error => console.error('Error:', error));
+
+            // Clear the input field
+            document.getElementById("user-input").value = "";
+        }
+
+        function receiveResponse(response) {
+            appendMessage("bot", response);
+
+            // Hide loading spinner and show send button
+            document.getElementById("send-button-container").classList.remove("d-none");
+            document.getElementById("loading-spinner-container").classList.add("d-none");
+        }
+
+        function appendMessage(sender, message) {
+            var chatContainer = document.getElementById("chat-container");
+            var messageElement = document.createElement("div");
+            messageElement.classList.add("message");
+            messageElement.classList.add(sender + "-message");
+            messageElement.innerText = message;
+
+            chatContainer.appendChild(messageElement);
+
+            // Scroll to the bottom of chat container
+            chatContainer.scrollTop = chatContainer.scrollHeight;
+        }
+    </script>
+</body>
+</html>
