@@ -15,4 +15,6 @@
 
 ## Checkout the Video
 
-<iframe width="560" height="315" src="https://www.youtube.com/embed/VpcC195Y0UY?si=QCIWqGmJtiJ5Cckd&amp;start=355" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen></iframe>
+- Click on the image or follow this link: https://www.youtube.com/watch?v=VpcC195Y0UY
+
+[![RAG on EMAIL](https://img.youtube.com/vi/VpcC195Y0UY/0.jpg)](https://www.youtube.com/watch?v=VpcC195Y0UY)
