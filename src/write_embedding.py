@@ -1,11 +1,8 @@
 import chromadb
+
 from reader import extract_messages
-from langchain_community.vectorstores import chroma
 from langchain_community import embeddings
 from langchain_community.chat_models import ollama
-from langchain_core.runnables import RunnablePassthrough
-from langchain_core.output_parsers import StrOutputParser
-from langchain_core.prompts import ChatPromptTemplate
 from langchain.text_splitter import CharacterTextSplitter
 
 
@@ -36,31 +33,4 @@ print(len(embedded_documents))
 
 chroma_collection.add(ids=ids, documents=doc_splits, embeddings=embedded_documents)
 
-print(chroma_collection.count())
-
-
-vector_store = chroma.Chroma(
-    client= chroma_client,
-    collection_name = "email_db",
-    embedding_function = embeddings.ollama.OllamaEmbeddings(model='nomic-embed-text')
-)
-
-retriever = vector_store.as_retriever(search_kwargs={'k': 10})
-
-after_rag_template = """Answer the question based only on the following context:
-{context}
-Question: {question}
-"""
-after_rag_prompt = ChatPromptTemplate.from_template(after_rag_template)
-after_rag_chain = (
-    {"context": retriever, "question": RunnablePassthrough()}
-    | after_rag_prompt
-    | model_local
-    | StrOutputParser()
-)
-
-for chunk in after_rag_chain.stream("what kind of traveling related mails I am getting?"):
-    if '\n' in chunk:
-        print(chunk)
-    else:        
-        print(chunk, end=" ")
+print(chroma_collection.count()) 
