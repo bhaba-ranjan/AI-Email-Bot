@@ -13,7 +13,7 @@ from langchain_core.prompts import ChatPromptTemplate
 
 app = Flask(__name__)
 CORS(app)
-model_local = ollama.ChatOllama(model='mistral')
+model_local = ollama.ChatOllama(model='mistral:7b-instruct-v0.2-q4_1')
 chroma_client = chromadb.HttpClient(host='localhost', port=8000)
 chroma_collection = chroma_client.create_collection("email_db", get_or_create=True)
 
@@ -23,7 +23,7 @@ vector_store = chroma.Chroma(
     embedding_function=embeddings.ollama.OllamaEmbeddings(model='nomic-embed-text')
 )
 
-retriever = vector_store.as_retriever(search_kwargs={'k': 8})
+retriever = vector_store.as_retriever(search_kwargs={'k': 5})
 
 after_rag_template = """Answer the question based only on the following context:
 {context}

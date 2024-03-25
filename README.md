@@ -1,3 +1,8 @@
+## Sample Response
+
+
+![Demo of chatting with the assistang](/src/assets/DemoChat.png)
+
 
 ## Retrieval Augmented Generation (RAG) on Emails
 
